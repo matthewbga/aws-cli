@@ -11,22 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import boto.sts
 import os
 import re
 import sys
 import logging
 import fileinput
 import datetime
-import json
-import requests
-import getpass
-import ConfigParser
-import base64
-import xml.etree.ElementTree as ET
-
-# from os.path import expanduser
-# from urlparse import urlparse, urlunparse
 
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
@@ -34,7 +24,8 @@ from botocore.compat import urlsplit
 from awscli.customizations.commands import BasicCommand
 from awscli.compat import BinaryStdout
 
-logger = logging.getLogger('botocore.credentials')
+# logging.basicConfig(filename="~/boto.log", level=logging.DEBUG)
+# logger = logging.getLogger('botocore.credentials')
 
 
 def initialize(cli):
@@ -115,15 +106,6 @@ class CodeCommitGetCommand(BasicCommand):
         return 0
 
     def write_git_parameters(self, signature):
-        save_stdout = sys.stdout
-#         sys.stdout = StringIO()        
-        print "Username:"123123,
-        saml_user = raw_input()
-        print saml_user
-
-        # return to your regularly-scheduled program
-        sys.stdout = save_stdout
-        
         username = self._session.get_credentials().access_key
         if self._session.get_credentials().token is not None:
             username += "%" + self._session.get_credentials().token
@@ -131,7 +113,7 @@ class CodeCommitGetCommand(BasicCommand):
         # Git does not like the \r, so switch to binary
         with BinaryStdout() as binary_stdout:
             binary_stdout.write('username={0}\n'.format(username))
-            logger.debug('username\n%s', username)
+            logger.info('username\n%s', username)
             binary_stdout.write('password={0}\n'.format(signature))
             # need to explicitly flush the buffer here,
             # before we turn the stream back to text for windows
